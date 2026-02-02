@@ -3,3 +3,10 @@ def say_greetings():
 
 
     say_greetings()
+
+
+
+def evening():
+    print("This is just a print evening")
+
+    evening()
