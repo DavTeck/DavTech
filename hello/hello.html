@@ -3,10 +3,554 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello</title>
+    <title>DavTech Journal</title>
+    <style>
+        :root {
+            --ink: #1b1b1b;
+            --muted: #5b5960;
+            --paper: #f5efe6;
+            --accent: #d24c2f;
+            --accent-dark: #982b16;
+            --wash: #f7e3d7;
+            --card: #fffaf4;
+            --shadow: 0 18px 50px rgba(24, 18, 12, 0.18);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at top right, #ffe4c7 0%, transparent 55%),
+                linear-gradient(160deg, #f7f1ea 0%, #f1d8c7 45%, #f6efe6 100%);
+            min-height: 100vh;
+        }
+
+        .page {
+            max-width: 1150px;
+            margin: 0 auto;
+            padding: 36px 24px 64px;
+        }
+
+        header {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 28px;
+            align-items: center;
+            background: var(--card);
+            border-radius: 28px;
+            padding: 28px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent 0%, rgba(210, 76, 47, 0.08) 60%);
+            pointer-events: none;
+        }
+
+        .site-title {
+            font-family: "Copperplate", "Copperplate Gothic Light", serif;
+            font-size: clamp(2.2rem, 4vw, 3.4rem);
+            letter-spacing: 0.04em;
+            margin: 0 0 8px;
+        }
+
+        .tagline {
+            margin: 0;
+            color: var(--muted);
+            font-size: 1.05rem;
+        }
+
+        nav {
+            display: flex;
+            justify-content: flex-end;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--ink);
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(210, 76, 47, 0.08);
+        }
+
+        nav a:hover {
+            background: rgba(210, 76, 47, 0.18);
+        }
+
+        .tools {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-btn,
+        .toggle-theme {
+            border: 1px solid rgba(27, 27, 27, 0.12);
+            background: #fff;
+            color: var(--ink);
+            border-radius: 999px;
+            padding: 8px 16px;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .filter-btn:hover,
+        .toggle-theme:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(27, 27, 27, 0.12);
+        }
+
+        .filter-btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: transparent;
+        }
+
+        .hero {
+            margin-top: 32px;
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 28px;
+            align-items: stretch;
+        }
+
+        .hero-card {
+            background: var(--card);
+            border-radius: 26px;
+            padding: 28px;
+            box-shadow: var(--shadow);
+        }
+
+        .hero-card h2 {
+            margin-top: 0;
+            font-size: 1.9rem;
+        }
+
+        .hero-card p {
+            color: var(--muted);
+            font-size: 1.02rem;
+            line-height: 1.6;
+        }
+
+        .hero-cta {
+            margin-top: 18px;
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .hero-cta:hover {
+            background: var(--accent-dark);
+        }
+
+        .hero-aside {
+            background: #1d1c1a;
+            color: #fef4e8;
+            border-radius: 26px;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-aside::before {
+            content: "";
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            right: -40px;
+            top: -40px;
+        }
+
+        .hero-aside h3 {
+            margin: 0 0 10px;
+            font-size: 1.4rem;
+        }
+
+        .hero-aside p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 24px;
+            margin-top: 30px;
+        }
+
+        article {
+            background: var(--card);
+            border-radius: 22px;
+            padding: 22px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+        }
+
+        article.hidden {
+            opacity: 0.15;
+            filter: grayscale(0.7);
+            transform: scale(0.98);
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: var(--wash);
+            color: var(--accent-dark);
+        }
+
+        article h4 {
+            margin: 0;
+            font-size: 1.25rem;
+        }
+
+        article p {
+            color: var(--muted);
+            margin: 0;
+            line-height: 1.55;
+        }
+
+        .meta {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+            color: #8a7f74;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .like-btn {
+            border: 1px solid rgba(27, 27, 27, 0.15);
+            background: #fff;
+            color: var(--ink);
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .like-btn.liked {
+            background: #1d1c1a;
+            color: #fff;
+            border-color: transparent;
+        }
+
+        .newsletter {
+            margin-top: 36px;
+            background: var(--card);
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: var(--shadow);
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .newsletter h3 {
+            margin: 0 0 10px;
+            font-size: 1.5rem;
+        }
+
+        .newsletter p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .newsletter form {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        input[type="email"] {
+            flex: 1 1 200px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: 1px solid #e4d6c7;
+            font-family: inherit;
+        }
+
+        button {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            padding: 10px 20px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .toast {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            background: #1d1c1a;
+            color: #fff;
+            padding: 12px 18px;
+            border-radius: 999px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dark {
+            --ink: #f7efe7;
+            --muted: rgba(255, 255, 255, 0.7);
+            --paper: #1a1613;
+            --accent: #f48b70;
+            --accent-dark: #d46a50;
+            --wash: rgba(244, 139, 112, 0.2);
+            --card: #251f1a;
+            --shadow: 0 18px 50px rgba(0, 0, 0, 0.4);
+            background:
+                radial-gradient(circle at top right, rgba(244, 139, 112, 0.2) 0%, transparent 55%),
+                linear-gradient(160deg, #120f0d 0%, #1e1915 55%, #141210 100%);
+        }
+
+        .dark nav a {
+            color: var(--ink);
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #8a7f74;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 900px) {
+            header,
+            .hero,
+            .newsletter {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                justify-content: flex-start;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <p>This ia a paragraph in a hello page</p>    
-</body>
+    <div class="page">
+        <header>
+            <div>
+                <h1 class="site-title">DavTech Journal</h1>
+                <p class="tagline">Field notes, product stories, and calm, honest takes on the craft of technology.</p>
+            </div>
+            <nav>
+                <a href="#">Essays</a>
+                <a href="#">Guides</a>
+                <a href="#">Studio</a>
+                <a href="#">About</a>
+            </nav>
+        </header>
 
+        <section class="tools">
+            <div class="filters" role="tablist" aria-label="Filter posts">
+                <button class="filter-btn active" data-filter="all" type="button">All</button>
+                <button class="filter-btn" data-filter="design" type="button">Design</button>
+                <button class="filter-btn" data-filter="engineering" type="button">Engineering</button>
+                <button class="filter-btn" data-filter="studio" type="button">Studio</button>
+            </div>
+            <button class="toggle-theme" type="button">Toggle Night Mode</button>
+        </section>
+
+        <section class="hero">
+            <div class="hero-card">
+                <span class="chip">Featured</span>
+                <h2>Building products that feel human</h2>
+                <p>
+                    A reflective series on shaping software that respects attention, earns trust,
+                    and makes room for delight. We track the decisions, prototypes, and conversations
+                    that get you there.
+                </p>
+                <a class="hero-cta" href="#">Read the latest essay</a>
+            </div>
+            <aside class="hero-aside">
+                <div>
+                    <h3>Weekly Logbook</h3>
+                    <p>
+                        A quiet place for experiments, tool reviews, and notes from the studio.
+                        Skim the last seven entries or follow along.
+                    </p>
+                </div>
+                <div class="meta">
+                    <span>Updated today</span>
+                    <span>7 entries</span>
+                </div>
+            </aside>
+        </section>
+
+        <section class="grid">
+            <article data-category="design">
+                <span class="chip">Design</span>
+                <h4>The anatomy of a focused landing page</h4>
+                <p>How to balance narrative, clarity, and visual rhythm without losing conversion intent.</p>
+                <div class="meta">
+                    <span>6 min read</span>
+                    <span>Jan 24</span>
+                </div>
+                <div class="actions">
+                    <button class="like-btn" type="button" data-count="24">♡ Like</button>
+                    <span class="meta">24 hearts</span>
+                </div>
+            </article>
+            <article data-category="engineering">
+                <span class="chip">Engineering</span>
+                <h4>Notes on resilient frontend systems</h4>
+                <p>A practical checklist for UI systems that survive the next three product cycles.</p>
+                <div class="meta">
+                    <span>8 min read</span>
+                    <span>Jan 18</span>
+                </div>
+                <div class="actions">
+                    <button class="like-btn" type="button" data-count="31">♡ Like</button>
+                    <span class="meta">31 hearts</span>
+                </div>
+            </article>
+            <article data-category="studio">
+                <span class="chip">Studio</span>
+                <h4>Making the weekly review actually work</h4>
+                <p>Structure, prompts, and templates that keep a small team aligned and creative.</p>
+                <div class="meta">
+                    <span>5 min read</span>
+                    <span>Jan 11</span>
+                </div>
+                <div class="actions">
+                    <button class="like-btn" type="button" data-count="18">♡ Like</button>
+                    <span class="meta">18 hearts</span>
+                </div>
+            </article>
+        </section>
+
+        <section class="newsletter">
+            <div>
+                <h3>Join the Thursday dispatch</h3>
+                <p>One thoughtful note every week with experiments, case studies, and open questions.</p>
+            </div>
+            <form id="newsletter-form">
+                <input type="email" id="email-input" placeholder="you@studio.com" aria-label="Email address" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </section>
+
+        <footer>
+            © 2026 DavTech Journal. Crafted with care in the studio.
+        </footer>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite">Thanks for subscribing!</div>
+    <script>
+        const filterButtons = document.querySelectorAll(".filter-btn");
+        const articles = document.querySelectorAll("article");
+        const toggleTheme = document.querySelector(".toggle-theme");
+        const toast = document.getElementById("toast");
+        const form = document.getElementById("newsletter-form");
+        const emailInput = document.getElementById("email-input");
+
+        filterButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                filterButtons.forEach((btn) => btn.classList.remove("active"));
+                button.classList.add("active");
+                const filter = button.dataset.filter;
+                articles.forEach((article) => {
+                    const matches = filter === "all" || article.dataset.category === filter;
+                    article.classList.toggle("hidden", !matches);
+                });
+            });
+        });
+
+        toggleTheme.addEventListener("click", () => {
+            document.body.classList.toggle("dark");
+            toggleTheme.textContent = document.body.classList.contains("dark")
+                ? "Toggle Day Mode"
+                : "Toggle Night Mode";
+        });
+
+        document.querySelectorAll(".like-btn").forEach((button) => {
+            button.addEventListener("click", () => {
+                const isLiked = button.classList.toggle("liked");
+                const current = Number(button.dataset.count);
+                const next = isLiked ? current + 1 : current - 1;
+                button.dataset.count = String(next);
+                button.textContent = isLiked ? "♥ Liked" : "♡ Like";
+                const label = button.nextElementSibling;
+                if (label) {
+                    label.textContent = `${next} hearts`;
+                }
+            });
+        });
+
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            if (!emailInput.value.trim()) {
+                return;
+            }
+            toast.textContent = `Thanks! We'll write to ${emailInput.value}.`;
+            toast.classList.add("show");
+            setTimeout(() => toast.classList.remove("show"), 2200);
+            form.reset();
+        });
+    </script>
+</body>
 </html>
